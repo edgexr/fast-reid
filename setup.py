@@ -30,7 +30,7 @@ setuptools.setup(
     name="fast_reid",
     version="0.1",
     package_dir={"": "."},
-    packages=["fastreid"],
+    packages=setuptools.find_packages(exclude=["tests*"]),
     python_requires=">=3.9",
     install_requires=list(
         get_install_requirements(
