@@ -6,7 +6,7 @@
 
 import torch.nn.functional as F
 
-from fastreid.modeling.heads import REID_HEADS_REGISTRY, EmbeddingHead
+from .embedding_head import REID_HEADS_REGISTRY, EmbeddingHead
 
 
 @REID_HEADS_REGISTRY.register()
@@ -19,13 +19,14 @@ class ClasHead(EmbeddingHead):
         neck_feat = self.bottleneck(pool_feat)
         neck_feat = neck_feat.view(neck_feat.size(0), -1)
 
-        if self.cls_layer.__class__.__name__ == 'Linear':
+        if self.cls_layer.__class__.__name__ == "Linear":
             logits = F.linear(neck_feat, self.weight)
         else:
             logits = F.linear(F.normalize(neck_feat), F.normalize(self.weight))
 
         # Evaluation
-        if not self.training: return logits.mul_(self.cls_layer.s)
+        if not self.training:
+            return logits.mul_(self.cls_layer.s)
 
         cls_outputs = self.cls_layer(logits.clone(), targets)
 
